@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unidades | Base de Datos II</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <script>
+    if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  </script>
+
+  <style>
+    /* VARIABLES DE TEMA */
+    :root {
+      --bg-main: #050505; --bg-card: #0f0f11; --text-main: #ffffff; --text-muted: #a1a1aa; 
+      --border: rgba(255,255,255,0.08); --accent: #3b82f6; --danger: #ef4444;
+      --card-hover: rgba(255,255,255,0.05); --modal-overlay: rgba(0,0,0,0.85);
+      --modal-bg: #131316; --grid-pattern: rgba(255,255,255,0.02);
+    }
+    [data-theme="light"] {
+      --bg-main: #f1f5f9; --bg-card: #ffffff; --text-main: #0f172a; --text-muted: #64748b; 
+      --border: rgba(0,0,0,0.1); --accent: #2563eb; 
+      --card-hover: rgba(0,0,0,0.03); --modal-overlay: rgba(15, 23, 42, 0.7);
+      --modal-bg: #ffffff; --grid-pattern: rgba(0,0,0,0.02);
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+    
+    body { margin: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-main); background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 70%); min-height: 100vh; transition: 0.4s; }
+
+    /* NAVBAR Y HEADER */
+    nav { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; background: var(--bg-card); }
+    .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.2rem; }
+    .logo i { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: white; padding: 8px; border-radius: 8px; font-size: 1rem; }
+    .nav-links { display: flex; gap: 30px; align-items: center;}
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); }
+
+    .theme-btn { background: transparent; border: 1px solid var(--border); color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+    .theme-btn:hover { background: var(--border); }
+    
+    /* BOTÓN ADMIN */
+    .admin-btn { color: var(--text-main); text-decoration: none; border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; display:flex; gap:8px; align-items:center; transition: 0.3s;}
+    .admin-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    .container { padding: 40px 5%; max-width: 1600px; margin: 0 auto; }
+    
+    /* HERRAMIENTAS */
+    .tools-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px 30px; border-radius: 16px; border: 1px solid var(--border);}
+    .search-box { position: relative; width: 100%; max-width: 400px; }
+    .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-box input { width: 100%; padding: 12px 15px 12px 40px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); outline: none; font-family: inherit; transition: 0.3s;}
+    .search-box input:focus { border-color: var(--accent); }
+    
+    .progress-box { width: 100%; max-width: 300px; }
+    .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: var(--text-muted); font-weight: 600;}
+    .progress-bar { width: 100%; height: 8px; background: rgba(150,150,150,0.2); border-radius: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #8b5cf6); width: 50%; border-radius: 10px;}
+
+    /* GRID UNIDADES */
+    .unidades-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+    .unidad-col { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 30px; transition: transform 0.3s ease; }
+    .unidad-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    .unidad-header h2 { font-size: 1.5rem; margin: 0; color: var(--text-main); }
+    .unidad-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-top: 5px; display: block; }
+    
+    .semana-card { background: transparent; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.3s ease; }
+    .semana-card:hover { background: var(--card-hover); border-color: var(--accent); transform: scale(1.02); }
+    .semana-label { color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+    .semana-titulo { font-size: 1rem; font-weight: 600; color: var(--text-main); margin-bottom: 10px;}
+    .semana-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); }
+    .badge-docs { background: rgba(59, 130, 246, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 0.75rem; border: 1px solid rgba(59, 130, 246, 0.2);}
+
+    /* MODAL DE SEMANAS (Archivos) */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .modal-box { background: var(--modal-bg); border: 1px solid var(--border); border-radius: 20px; width: 90%; max-width: 550px; display: flex; flex-direction: column; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); }
+    .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+    .modal-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--accent), #8b5cf6, transparent); z-index: 10; }
+    .modal-box::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(var(--grid-pattern) 1px, transparent 1px), linear-gradient(90deg, var(--grid-pattern) 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; z-index: 0; opacity: 0.5; }
+
+    .modal-header { padding: 25px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; background: linear-gradient(to bottom, rgba(59, 130, 246, 0.05), transparent); }
+    .modal-header h3 { margin: 0; font-size: 1.3rem; color: var(--text-main); display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -0.5px;}
+    
+    .close-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
+    .close-btn:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.3); transform: rotate(90deg); }
+    
+    .modal-body { padding: 30px; min-height: 250px; max-height: 60vh; overflow-y: auto; position: relative; z-index: 1; }
+
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 0; text-align: center; }
+    .radar-container { position: relative; width: 120px; height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; }
+    .ring-1, .ring-2 { position: absolute; border-radius: 50%; border: 2px dashed var(--border); }
+    .ring-1 { width: 100%; height: 100%; animation: spin 15s linear infinite; }
+    .ring-2 { width: 70%; height: 70%; border: 2px dotted rgba(59, 130, 246, 0.4); animation: spin 10s linear infinite reverse; }
+    .folder-icon { font-size: 2.5rem; color: var(--text-muted); z-index: 2; animation: float 3s ease-in-out infinite; opacity: 0.6; }
+    .empty-state h4 { margin: 0 0 10px 0; color: var(--text-main); font-size: 1.1rem; }
+    .empty-state p { margin: 0; color: var(--text-muted); font-size: 0.9rem; max-width: 250px; line-height: 1.5; }
+
+    .file-card { display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; text-decoration: none; transition: all 0.3s ease; position: relative; overflow: hidden; }
+    .file-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); opacity: 0; transition: 0.3s; }
+    .file-card:hover { transform: translateX(5px); border-color: rgba(59, 130, 246, 0.3); background: var(--card-hover); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .file-card:hover::before { opacity: 1; }
+    
+    .file-info { display: flex; align-items: center; gap: 15px; }
+    .file-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); color: var(--danger); display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
+    .file-details h5 { margin: 0 0 4px 0; color: var(--text-main); font-size: 0.95rem; font-weight: 600; }
+    .file-details span { color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase; }
+    .download-btn { width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; color: var(--text-muted); transition: 0.3s; }
+    .file-card:hover .download-btn { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.1); }
+
+    /* CSS DEL LOGIN MODAL */
+    .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center; z-index: 1100; opacity: 0; pointer-events: none; transition: 0.4s; }
+    .login-overlay.active { opacity: 1; pointer-events: auto; }
+    .login-box { background: var(--modal-bg); border: 1px solid var(--border); border-radius: 20px; width: 90%; max-width: 400px; padding: 40px; transform: scale(0.95) translateY(20px); transition: 0.4s; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); position: relative; overflow: hidden;}
+    .login-overlay.active .login-box { transform: scale(1) translateY(0); }
+    .login-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent), #8b5cf6); }
+    .login-header { text-align: center; margin-bottom: 30px; }
+    .login-header i { font-size: 2.5rem; color: var(--accent); margin-bottom: 15px; }
+    .login-header h2 { margin: 0; font-size: 1.5rem; color: var(--text-main); letter-spacing: -0.5px; }
+    .login-header p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem; }
+    .input-group { margin-bottom: 20px; position: relative; }
+    .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1rem; }
+    .input-group input { width: 100%; padding: 14px 15px 14px 45px; background: rgba(150,150,150,0.05); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); outline: none; font-family: inherit; font-size: 0.95rem; transition: 0.3s; box-sizing: border-box;}
+    .input-group input:focus { border-color: var(--accent); background: transparent; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+    .btn-login { width: 100%; background: linear-gradient(135deg, var(--accent), #6366f1); color: white; padding: 14px; border: none; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; font-family: inherit; display: flex; justify-content: center; align-items: center; gap: 10px;}
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); filter: brightness(1.1);}
+    .close-login { position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+    .close-login:hover { color: var(--danger); }
+    .error-msg { color: var(--danger); font-size: 0.85rem; text-align: center; margin-bottom: 15px; display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);}
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><i class="fas fa-database"></i><div>Base de Datos II</div></div>
+    <div class="nav-links">
+      <a href="index.html">Inicio</a>
+      <a href="unidades.html" class="active">Semanas y Unidades</a>
+      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()"><i class="fas fa-sun"></i></button>
+      
+      <button onclick="abrirLogin()" class="admin-btn" style="background:transparent; cursor:pointer;"><i class="fas fa-lock"></i> Admin</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="tools-section">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="buscador" placeholder="Buscar semana (Ej. Cliente-Servidor)..." onkeyup="filtrarSemanas()">
+      </div>
+      <div class="progress-box">
+        <div class="progress-header"><span>Progreso del Curso</span><span>Mitad de Semestre</span></div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="unidades-grid" id="gridUnidades">
+      <div class="unidad-col"><div class="unidad-header"><div><h2>Unidad 1</h2><span class="unidad-subtitle">Modelos Arquitectónicos</span></div></div><div id="u1-list"></div></div>
+      <div class="unidad-col"><div class="unidad-header"><div><h2>Unidad 2</h2><span class="unidad-subtitle">Lógica Transaccional</span></div></div><div id="u2-list"></div></div>
+      <div class="unidad-col"><div class="unidad-header"><div><h2>Unidad 3</h2><span class="unidad-subtitle">Seguridad e Integración</span></div></div><div id="u3-list"></div></div>
+      <div class="unidad-col"><div class="unidad-header"><div><h2>Unidad 4</h2><span class="unidad-subtitle">Despliegue y Optimización</span></div></div><div id="u4-list"></div></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="semanaModal" onclick="cerrarModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modalTitle"><i class="far fa-calendar-alt" style="color: var(--accent);"></i> Cargando...</h3>
+        <button class="close-btn" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        </div>
+    </div>
+  </div>
+
+  <div class="login-overlay" id="loginModal" onclick="cerrarLogin(event)">
+    <div class="login-box" onclick="event.stopPropagation()">
+      <button class="close-login" onclick="cerrarLogin()"><i class="fas fa-times"></i></button>
+      
+      <div class="login-header">
+        <i class="fas fa-fingerprint"></i>
+        <h2>Autenticación</h2>
+        <p>Ingresa tus credenciales de administrador</p>
+      </div>
+
+      <div id="loginError" class="error-msg">Credenciales incorrectas.</div>
+
+      <form onsubmit="procesarLogin(event)">
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        </div>
+        
+        <button type="submit" class="btn-login">
+          <span id="btnText">Iniciar Sesión</span>
+          <i class="fas fa-spinner fa-spin" id="btnSpinner" style="display: none;"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const nombresSemanas = {
+      1: "Introducción y Conceptos Base", 2: "Arquitectura Cliente-Servidor", 3: "Diseño de Capas Lógicas", 4: "Semanas de Pruebas I",
+      5: "Procedimientos Almacenados", 6: "Funciones y Triggers", 7: "Gestión de Concurrencia", 8: "Examen Parcial",
+      9: "Roles y Privilegios", 10: "Encriptación de Datos", 11: "Integración de APIs", 12: "Evaluación Unidad III",
+      13: "Planes de Ejecución", 14: "Estrategias de Backups", 15: "Implementación", 16: "Sustentación Final"
+    };
+
+    function cargarTarjetasSemanas(filtro = "") {
+      const db = JSON.parse(localStorage.getItem('db_tareas_formal')) || [];
+      for(let i=1; i<=4; i++) document.getElementById(`u${i}-list`).innerHTML = '';
+
+      for(let s=1; s<=16; s++) {
+        let tituloSemana = nombresSemanas[s];
+        if (tituloSemana.toLowerCase().includes(filtro) || filtro === "") {
+          let unidadPerteneciente = Math.ceil(s / 4);
+          let listaDiv = document.getElementById(`u${unidadPerteneciente}-list`);
+          const archivosSemana = db.filter(doc => doc.semana == s);
+          let docsCountHtml = archivosSemana.length > 0 ? `<span class="badge-docs">${archivosSemana.length} Entregable(s)</span>` : `<span></span>`;
+
+          listaDiv.innerHTML += `
+            <div class="semana-card" onclick="abrirModal(${s})">
+              <span class="semana-label">SEMANA ${s}</span>
+              <div class="semana-titulo">${tituloSemana}</div>
+              <div class="semana-footer">
+                ${docsCountHtml}
+                <span style="color: var(--accent);"><i class="fas fa-arrow-right"></i> Ver Panel</span>
+              </div>
+            </div>`;
+        }
+      }
+    }
+
+    function abrirModal(semana) {
+      const db = JSON.parse(localStorage.getItem('db_tareas_formal')) || [];
+      const archivos = db.filter(doc => doc.semana == semana);
+      document.getElementById('modalTitle').innerHTML = `<div style="background: rgba(59, 130, 246, 0.1); width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: var(--accent);"><i class="far fa-folder-open"></i></div>Semana ${semana}`;
+      const modalBody = document.getElementById('modalBody');
+
+      if (archivos.length === 0) {
+        modalBody.innerHTML = `<div class="empty-state"><div class="radar-container"><div class="ring-1"></div><div class="ring-2"></div><i class="fas fa-folder-open folder-icon"></i></div><h4>Señal no detectada</h4><p>El repositorio para esta semana está a la espera de nuevos entregables.</p></div>`;
+      } else {
+        modalBody.innerHTML = archivos.map(a => `<a class="file-card" href="#"><div class="file-info"><div class="file-icon"><i class="fas fa-file-pdf"></i></div><div class="file-details"><h5>${a.nombre}</h5><span>Documento PDF • Entregable</span></div></div><div class="download-btn"><i class="fas fa-arrow-down"></i></div></a>`).join('');
+      }
+      document.getElementById('semanaModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal(event) {
+      if (!event || event.target.id === 'semanaModal') {
+        document.getElementById('semanaModal').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+    
+    function filtrarSemanas() { cargarTarjetasSemanas(document.getElementById('buscador').value.toLowerCase()); }
+    cargarTarjetasSemanas();
+
+    // LÓGICA DEL TEMA
+    const themeBtn = document.getElementById('themeToggle');
+    if (document.documentElement.getAttribute('data-theme') === 'light') themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+
+    function toggleTheme() {
+      const root = document.documentElement;
+      if (root.getAttribute('data-theme') === 'light') {
+        root.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'dark');
+        themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        root.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+    }
+
+    // ==========================================
+    // LÓGICA DEL LOGIN (NUEVO)
+    // ==========================================
+    function abrirLogin() {
+      document.getElementById('loginModal').classList.add('active');
+    }
+    
+    function cerrarLogin(event) {
+      if (!event || event.target.id === 'loginModal') {
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('loginError').style.display = 'none';
+      }
+    }
+
+    async function procesarLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('btnSpinner');
+      const errorMsg = document.getElementById('loginError');
+
+      btnText.style.display = 'none';
+      spinner.style.display = 'inline-block';
+      errorMsg.style.display = 'none';
+
+      // Simulación de validación (Reemplazar con Supabase luego)
+      setTimeout(() => {
+        if(email === 'admin@sistema.com' && pass === 'admin123') {
+           localStorage.setItem('session_activa', 'true');
+           window.location.href = 'admin.html';
+        } else {
+           errorMsg.innerText = "Error: Usa admin@sistema.com y admin123";
+           errorMsg.style.display = 'block';
+           btnText.style.display = 'inline-block';
+           spinner.style.display = 'none';
+        }
+      }, 1500); 
+    }
+  </script>
+</body>
+</html>

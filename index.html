@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base de Datos II | Inicio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  </script>
+
+  <style>
+    /* VARIABLES DE TEMA OSCURO */
+    :root {
+      --bg-main: #050505; --bg-surface: rgba(20, 20, 23, 0.4); --text-main: #ffffff;
+      --text-muted: #a1a1aa; --border: rgba(255, 255, 255, 0.1);
+      --accent: #3b82f6; --accent-hover: #2563eb; --danger: #ef4444; --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --modal-overlay: rgba(0,0,0,0.85); --modal-bg: #131316;
+    }
+    
+    /* VARIABLES DE TEMA CLARO */
+    [data-theme="light"] {
+      --bg-main: #f8fafc; --bg-surface: rgba(255, 255, 255, 0.7); --text-main: #0f172a;
+      --text-muted: #64748b; --border: rgba(0, 0, 0, 0.1);
+      --accent: #2563eb; --accent-hover: #1e40af; --danger: #ef4444; --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+      --modal-overlay: rgba(15, 23, 42, 0.7); --modal-bg: #ffffff;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+
+    body { margin: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background-color 0.4s ease, color 0.4s ease; }
+
+    /* ORBES DE FONDO */
+    .blob { position: absolute; filter: blur(90px); z-index: -1; opacity: 0.5; animation: float 12s infinite alternate ease-in-out; border-radius: 50%; }
+    .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(59, 130, 246, 0.2); }
+    .blob-2 { bottom: -20%; right: -10%; width: 40vw; height: 40vw; background: rgba(139, 92, 246, 0.2); animation-delay: -4s; }
+    @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(80px, 50px) scale(1.1); } }
+
+    /* NAVBAR */
+    nav { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+    .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.2rem; }
+    .logo i { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: white; padding: 8px; border-radius: 8px; font-size: 1rem; }
+    
+    .nav-links { display: flex; gap: 30px; align-items: center; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: 0.3s; }
+    .nav-links a:hover { color: var(--text-main); }
+
+    .theme-btn { background: transparent; border: 1px solid var(--border); color: var(--text-main); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+    .theme-btn:hover { background: var(--border); transform: rotate(15deg); }
+    
+    /* BOTÓN ADMIN */
+    .admin-btn { border: 1px solid var(--border); padding: 8px 18px; border-radius: 8px; color: var(--text-main); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; background: var(--bg-surface); backdrop-filter: blur(4px); transition: 0.3s; cursor: pointer; font-family: inherit; font-weight: 500;}
+    .admin-btn:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2); }
+
+    /* HERO LAYOUT */
+    .hero-container { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 0 5%; gap: 50px; max-width: 1600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .hero-text span { color: var(--accent); text-transform: uppercase; letter-spacing: 4px; font-size: 0.75rem; font-weight: 700; margin-bottom: 20px; display: inline-block; padding: 6px 16px; background: rgba(59, 130, 246, 0.1); border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .hero-text h1 { font-size: clamp(3rem, 5vw, 5rem); font-weight: 800; margin: 0; line-height: 1.1; letter-spacing: -2px; }
+    .hero-text p { color: var(--text-muted); max-width: 500px; margin: 25px 0 40px; line-height: 1.7; font-size: 1.15rem; }
+    .btn-main { background: var(--text-main); color: var(--bg-main); padding: 16px 40px; border-radius: 12px; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 12px; transition: 0.3s; border: 1px solid transparent; }
+    .btn-main:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); background: transparent; color: var(--text-main); border-color: var(--text-main); }
+
+    /* CARRUSEL VERTICAL */
+    .hero-visuals { display: flex; justify-content: center; align-items: center; height: 550px; }
+    .carousel-wrapper { position: relative; height: 100%; width: 340px; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); }
+    .carousel-track { display: flex; flex-direction: column; gap: 20px; animation: scrollVertical 20s linear infinite; }
+    .carousel-track:hover { animation-play-state: paused; }
+    .glass-card { background: var(--bg-surface); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 25px; box-shadow: var(--glass-shadow); flex-shrink: 0; transition: transform 0.3s; }
+    .glass-card:hover { border-color: var(--accent); transform: scale(1.02); }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; color: var(--text-main); font-weight: 600;}
+    .card-header i { color: var(--accent); font-size: 1.5rem; }
+    .skeleton-line { height: 8px; background: var(--border); border-radius: 4px; margin-bottom: 10px; width: 100%; }
+    .skeleton-line.short { width: 60%; }
+
+    @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+
+    /* DISEÑO DEL MODAL DE LOGIN */
+    .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.4s; }
+    .login-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .login-box { background: var(--modal-bg); border: 1px solid var(--border); border-radius: 20px; width: 90%; max-width: 400px; padding: 40px; transform: scale(0.95) translateY(20px); transition: 0.4s; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); position: relative; overflow: hidden;}
+    .login-overlay.active .login-box { transform: scale(1) translateY(0); }
+    .login-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent), #8b5cf6); }
+
+    .login-header { text-align: center; margin-bottom: 30px; }
+    .login-header i { font-size: 2.5rem; color: var(--accent); margin-bottom: 15px; }
+    .login-header h2 { margin: 0; font-size: 1.5rem; color: var(--text-main); letter-spacing: -0.5px; }
+    .login-header p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem; }
+
+    .input-group { margin-bottom: 20px; position: relative; }
+    .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1rem; }
+    .input-group input { width: 100%; padding: 14px 15px 14px 45px; background: rgba(150,150,150,0.05); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); outline: none; font-family: inherit; font-size: 0.95rem; transition: 0.3s; box-sizing: border-box;}
+    .input-group input:focus { border-color: var(--accent); background: transparent; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+
+    .btn-login { width: 100%; background: linear-gradient(135deg, var(--accent), #6366f1); color: white; padding: 14px; border: none; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; font-family: inherit; display: flex; justify-content: center; align-items: center; gap: 10px;}
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); filter: brightness(1.1);}
+    
+    .close-login { position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+    .close-login:hover { color: var(--danger); }
+
+    .error-msg { color: var(--danger); font-size: 0.85rem; text-align: center; margin-bottom: 15px; display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);}
+  </style>
+</head>
+<body>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav>
+    <div class="logo">
+      <i class="fas fa-database"></i>
+      <div>Base de Datos II</div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" style="color: var(--text-main);">Inicio</a>
+      <a href="unidades.html">Semanas y Unidades</a>
+      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()"><i class="fas fa-sun"></i></button>
+      
+      <button onclick="abrirLogin()" class="admin-btn"><i class="fas fa-lock"></i> Admin</button>
+    </div>
+  </nav>
+
+  <div class="hero-container">
+    <div class="hero-text">
+      <span>Gestión Académica</span>
+      <h1>Arquitectura de<br>Entregables</h1>
+      <p>Un entorno de alto rendimiento estructurado para el control y distribución de material académico.</p>
+      <a href="unidades.html" class="btn-main">Acceder al Sistema <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <div class="hero-visuals">
+      <div class="carousel-wrapper">
+        <div class="carousel-track">
+          <div class="glass-card"><div class="card-header"><i class="fas fa-server"></i> Unidad 1: Arquitectura</div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+          <div class="glass-card" style="border-color: rgba(59, 130, 246, 0.4);"><div class="card-header"><i class="fas fa-file-pdf"></i> Diagrama_MER.pdf</div><div style="width: 100%; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border: 1px dashed rgba(59, 130, 246, 0.3); display: flex; justify-content: center; align-items: center;"><i class="fas fa-check-circle" style="color: var(--accent); font-size: 2rem;"></i></div></div>
+          <div class="glass-card"><div class="card-header"><i class="fas fa-shield-alt"></i> Unidad 3: Seguridad</div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+          
+          <div class="glass-card"><div class="card-header"><i class="fas fa-server"></i> Unidad 1: Arquitectura</div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+          <div class="glass-card" style="border-color: rgba(59, 130, 246, 0.4);"><div class="card-header"><i class="fas fa-file-pdf"></i> Diagrama_MER.pdf</div><div style="width: 100%; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border: 1px dashed rgba(59, 130, 246, 0.3); display: flex; justify-content: center; align-items: center;"><i class="fas fa-check-circle" style="color: var(--accent); font-size: 2rem;"></i></div></div>
+          <div class="glass-card"><div class="card-header"><i class="fas fa-shield-alt"></i> Unidad 3: Seguridad</div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-overlay" id="loginModal" onclick="cerrarLogin(event)">
+    <div class="login-box" onclick="event.stopPropagation()">
+      <button class="close-login" onclick="cerrarLogin()"><i class="fas fa-times"></i></button>
+      
+      <div class="login-header">
+        <i class="fas fa-fingerprint"></i>
+        <h2>Autenticación</h2>
+        <p>Ingresa tus credenciales de administrador</p>
+      </div>
+
+      <div id="loginError" class="error-msg">Credenciales incorrectas.</div>
+
+      <form onsubmit="procesarLogin(event)">
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        </div>
+        
+        <button type="submit" class="btn-login">
+          <span id="btnText">Iniciar Sesión</span>
+          <i class="fas fa-spinner fa-spin" id="btnSpinner" style="display: none;"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 1. TEMA CLARO/OSCURO
+    const themeBtn = document.getElementById('themeToggle');
+    if (document.documentElement.getAttribute('data-theme') === 'light') themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+    
+    function toggleTheme() {
+      const root = document.documentElement;
+      if (root.getAttribute('data-theme') === 'light') { 
+        root.removeAttribute('data-theme'); 
+        localStorage.setItem('theme', 'dark'); 
+        themeBtn.innerHTML = '<i class="fas fa-sun"></i>'; 
+      } else { 
+        root.setAttribute('data-theme', 'light'); 
+        localStorage.setItem('theme', 'light'); 
+        themeBtn.innerHTML = '<i class="fas fa-moon"></i>'; 
+      }
+    }
+
+    // 2. FUNCIONES DEL LOGIN MODAL
+    function abrirLogin() {
+      document.getElementById('loginModal').classList.add('active');
+    }
+    
+    function cerrarLogin(event) {
+      if (!event || event.target.id === 'loginModal') {
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('loginError').style.display = 'none'; 
+      }
+    }
+
+    async function procesarLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('btnSpinner');
+      const errorMsg = document.getElementById('loginError');
+
+      // Animación de carga
+      btnText.style.display = 'none';
+      spinner.style.display = 'inline-block';
+      errorMsg.style.display = 'none';
+
+      // Simulación de respuesta del servidor (1.5 segundos)
+      setTimeout(() => {
+        // Validación simulada
+        if(email === 'admin@sistema.com' && pass === 'admin123') {
+           // Guarda la sesión
+           localStorage.setItem('session_activa', 'true');
+           // Redirige al panel protegido
+           window.location.href = 'admin.html';
+        } else {
+           // Muestra error
+           errorMsg.innerText = "Error: Usa admin@sistema.com y admin123";
+           errorMsg.style.display = 'block';
+           btnText.style.display = 'inline-block';
+           spinner.style.display = 'none';
+        }
+      }, 1500); 
+    }
+  </script>
+</body>
+</html>  
