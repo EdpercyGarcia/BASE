@@ -217,7 +217,41 @@
 
       if (!file) { showToast("Seleccione un archivo primero", "error"); return; }
       
-      showToast("Subiendo archivo a la nube...");
+      showToast("Conectando con Supabase...");
+
+      try {
+        // 🛠️ LA SOLUCIÓN: Limpiamos el nombre del archivo para que Supabase no se queje
+        const nombreSeguro = file.name
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quita las tildes
+          .replace(/[^a-zA-Z0-9.-]/g, "_");                 // Cambia espacios y símbolos por guiones bajos
+          
+        const rutaArchivo = `semana_${semana}/${Date.now()}_${nombreSeguro}`;
+        
+        // 1. GUARDAR EN STORAGE (CARPETA)
+        const { data: storageData, error: storageError } = await clienteSupabase.storage.from('entregables').upload(rutaArchivo, file);
+        
+        if (storageError) {
+            alert("🚨 FALLÓ EL STORAGE (Carpeta): \n" + storageError.message);
+            throw storageError;
+        }
+
+        // 2. GUARDAR EN BASE DE DATOS (Guardamos el file.name original para que la tabla se vea bien)
+        const { data, error: dbError } = await clienteSupabase.from('documentos').insert([{ unidad: unidad, semana: semana, nombre: file.name, archivo_ruta: rutaArchivo }]);
+        
+        if (dbError) {
+            alert("🚨 FALLÓ LA BASE DE DATOS (Tabla): \n" + dbError.message);
+            throw dbError;
+        }
+
+        showToast("Archivo subido y registrado exitosamente");
+        fileInput.value = ''; 
+        cargarTabla();
+      } catch (err) {
+        showToast("Revisa la ventana emergente para ver el error", "error");
+        console.error("Detalle técnico:", err);
+      }
+    
+    
 
       try {
         const rutaArchivo = `semana_${semana}/${Date.now()}_${file.name}`;
