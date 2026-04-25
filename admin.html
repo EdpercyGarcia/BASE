@@ -8,13 +8,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <script>
-    // VERIFICACIÓN DE SEGURIDAD
     if (localStorage.getItem('session_activa') !== 'true') { window.location.href = 'index.html'; }
     if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
   </script>
 
   <style>
-    /* MODO OSCURO */
     :root {
       --bg-base: #050505; --bg-surface: #0f0f11; --bg-hover: rgba(255,255,255,0.05);
       --border: rgba(255,255,255,0.08); --text-main: #fafafa; --text-muted: #a1a1aa;
@@ -23,56 +21,42 @@
       --warning: #f59e0b;
       --radius: 12px;
     }
-    /* MODO CLARO */
     [data-theme="light"] {
       --bg-base: #f1f5f9; --bg-surface: #ffffff; --bg-hover: rgba(0,0,0,0.05);
       --border: rgba(0,0,0,0.1); --text-main: #0f172a; --text-muted: #64748b;
       --primary: #2563eb; --primary-hover: #1e40af;
       --danger: #ef4444; --danger-hover: rgba(239, 68, 68, 0.1); --success: #10b981;
     }
-
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg-base); }
     ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: var(--bg-base); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; transition: 0.4s; }
-
-    /* SIDEBAR */
     aside { width: 280px; background: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 20;}
     .brand { font-size: 1.3rem; font-weight: 800; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 12px; color: var(--text-main); }
     .brand i { color: var(--primary); font-size: 1.5rem; }
-    
     .nav-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 1.5rem 0 0.5rem; padding-left: 0.8rem; font-weight: 700; }
     .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 0.2rem; }
     .nav-menu li a { display: flex; align-items: center; gap: 14px; padding: 0.8rem 1rem; color: var(--text-muted); text-decoration: none; border-radius: 8px; font-weight: 500; transition: 0.2s; font-size: 0.9rem; cursor: pointer;}
     .nav-menu li a i { font-size: 1.1rem; width: 20px; text-align: center; }
     .nav-menu li a:hover, .nav-menu li a.active { background: var(--bg-hover); color: var(--text-main); }
     .nav-menu li a.active i { color: var(--primary); }
-    
     .logout-btn, .theme-toggle-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.9rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; transition: 0.2s; margin-bottom: 10px; width: 100%; font-family: inherit;}
     .logout-btn:hover { color: var(--danger); border-color: var(--danger); background: var(--danger-hover); }
     .theme-toggle-btn { background: var(--bg-hover); color: var(--text-main); }
     .theme-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
-
-    /* MAIN ÁREA */
     main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
     .topbar { height: 80px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 3rem; background: var(--bg-surface); position: sticky; top: 0; z-index: 10; }
     .topbar-title { font-size: 1.2rem; font-weight: 600; transition: 0.3s; }
     .content { padding: 2rem 3rem; max-width: 1300px; margin: 0 auto; width: 100%; }
-
-    /* ANIMACIÓN DE PANTALLAS */
     .screen-section { display: none; animation: fadeIn 0.4s ease forwards; }
     .screen-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* UI ELEMENTS */
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
     .kpi-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: 0.2s; }
     .kpi-icon { width: 50px; height: 50px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
     .kpi-data h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;}
     .kpi-data span { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
-
     .panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2.5rem; }
     .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; }
     .btn { padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; color: white; font-family: inherit;}
@@ -80,22 +64,18 @@
     .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
     .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 0.5rem 1rem; font-size: 0.85rem; }
     .btn-danger:hover { background: var(--danger); color: white; }
-
     .input-row { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end;}
     .form-control { flex: 1; min-width: 200px; display: flex; flex-direction: column; }
     .form-control label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;}
     .form-control input, .form-control select { width: 100%; padding: 0.8rem 1rem; background: transparent; border: 1px solid var(--border); color: var(--text-main); border-radius: 8px; outline: none; font-family: inherit;}
     .form-control input:focus, .form-control select:focus { border-color: var(--primary); }
-
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th { color: var(--text-muted); border-bottom: 1px solid var(--border); padding: 1rem; font-size: 0.8rem; text-transform: uppercase;}
     td { padding: 1.2rem 1rem; border-bottom: 1px solid var(--border); }
-    
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid transparent; }
     .badge-blue { background: rgba(59, 130, 246, 0.1); color: var(--primary); border-color: rgba(59, 130, 246, 0.2); }
     .badge-green { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
     .badge-yellow { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
-
     #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
     .toast { background: var(--bg-surface); border-left: 4px solid var(--primary); color: var(--text-main); padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease forwards; border: 1px solid var(--border); border-left-width: 4px;}
     .toast.error { border-left-color: var(--danger); }
@@ -129,7 +109,7 @@
     <div class="topbar">
       <h2 id="topbar-title" class="topbar-title">Gestión de Entregables</h2>
       <div style="color: var(--success); font-size: 0.9rem; font-weight: 600; display:flex; align-items:center; gap:8px;">
-        <i class="fas fa-circle" style="font-size:0.5rem;"></i> Sistema Conectado
+        <i class="fas fa-circle" style="font-size:0.5rem;"></i> Sistema Conectado a la Nube
       </div>
     </div>
 
@@ -142,13 +122,13 @@
             <div class="kpi-data"><h4>Total Entregables</h4><span id="kpi-total">0</span></div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fas fa-hdd"></i></div>
-            <div class="kpi-data"><h4>Almacenamiento</h4><span>Local</span></div>
+            <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fas fa-cloud"></i></div>
+            <div class="kpi-data"><h4>Almacenamiento</h4><span>Supabase</span></div>
           </div>
         </div>
 
         <div class="panel">
-          <div class="panel-header"><h3><i class="fas fa-cloud-upload-alt" style="color:var(--primary)"></i> Asignar Nuevo Documento</h3></div>
+          <div class="panel-header"><h3><i class="fas fa-cloud-upload-alt" style="color:var(--primary)"></i> Subir Documento a la Nube</h3></div>
           <div class="input-row">
             <div class="form-control" style="flex: 0.5;">
               <label>Unidad</label>
@@ -159,15 +139,15 @@
               <select id="uploadWeek"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option><option value="6">Semana 6</option></select>
             </div>
             <div class="form-control">
-              <label>Archivo PDF</label>
+              <label>Archivo Físico (PDF)</label>
               <input type="file" id="uploadFile" accept=".pdf,.docx">
             </div>
-            <button class="btn btn-primary" onclick="subirArchivo()"><i class="fas fa-upload"></i> Subir Documento</button>
+            <button class="btn btn-primary" onclick="subirArchivo()"><i class="fas fa-upload"></i> Guardar en BD</button>
           </div>
         </div>
 
         <div class="panel">
-          <div class="panel-header"><h3><i class="fas fa-folder-open" style="color:var(--primary)"></i> Repositorio Activo</h3></div>
+          <div class="panel-header"><h3><i class="fas fa-database" style="color:var(--primary)"></i> Base de Datos (PostgreSQL)</h3></div>
           <table id="filesTable">
             <thead><tr><th style="width: 25%;">Ubicación</th><th style="width: 50%;">Nombre del Documento</th><th style="width: 25%; text-align: right;">Acciones</th></tr></thead>
             <tbody id="filesTableBody"></tbody>
@@ -175,84 +155,25 @@
         </div>
       </div>
 
-
       <div id="pantalla-usuarios" class="screen-section">
         <div class="kpi-grid">
           <div class="kpi-card">
             <div class="kpi-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i class="fas fa-users"></i></div>
-            <div class="kpi-data"><h4>Total Usuarios</h4><span>12</span></div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);"><i class="fas fa-user-shield"></i></div>
-            <div class="kpi-data"><h4>Administradores</h4><span>2</span></div>
+            <div class="kpi-data"><h4>Total Usuarios</h4><span>1</span></div>
           </div>
         </div>
-
         <div class="panel">
-          <div class="panel-header"><h3><i class="fas fa-user-plus" style="color:var(--primary)"></i> Registrar Nuevo Usuario</h3></div>
-          <div class="input-row">
-            <div class="form-control">
-              <label>Nombre Completo</label>
-              <input type="text" placeholder="Ej. Juan Pérez">
-            </div>
-            <div class="form-control">
-              <label>Correo Electrónico</label>
-              <input type="email" placeholder="correo@institucion.edu">
-            </div>
-            <div class="form-control" style="flex: 0.5;">
-              <label>Rol de Acceso</label>
-              <select><option>Estudiante</option><option>Administrador</option></select>
-            </div>
-            <button class="btn btn-primary" onclick="showToast('Usuario registrado (Simulación)')"><i class="fas fa-save"></i> Guardar Usuario</button>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-header"><h3><i class="fas fa-list" style="color:var(--primary)"></i> Directorio de Accesos</h3></div>
-          <table>
-            <thead><tr><th>Usuario</th><th>Correo</th><th>Rol</th><th>Estado</th><th style="text-align: right;">Acciones</th></tr></thead>
-            <tbody>
-              <tr>
-                <td style="font-weight: 500;">Admin Principal</td>
-                <td style="color: var(--text-muted);">admin@sistema.com</td>
-                <td><span class="badge badge-yellow">Administrador</span></td>
-                <td><span class="badge badge-green">Activo</span></td>
-                <td style="text-align: right;"><button class="btn btn-danger" style="opacity:0.5; cursor:not-allowed;" disabled>Sistema</button></td>
-              </tr>
-              <tr>
-                <td style="font-weight: 500;">Estudiante Prueba</td>
-                <td style="color: var(--text-muted);">estudiante@sistema.com</td>
-                <td><span class="badge badge-blue">Estudiante</span></td>
-                <td><span class="badge badge-green">Activo</span></td>
-                <td style="text-align: right;"><button class="btn btn-danger" onclick="showToast('Acción denegada', 'error')"><i class="fas fa-ban"></i> Suspender</button></td>
-              </tr>
-            </tbody>
-          </table>
+          <p style="color: var(--text-muted);">El registro de usuarios se gestiona desde la pestaña "Authentication" en el panel de Supabase.</p>
         </div>
       </div>
-
 
       <div id="pantalla-supabase" class="screen-section">
         <div class="panel" style="border: 1px solid rgba(16, 185, 129, 0.3); background: linear-gradient(145deg, var(--bg-surface), rgba(16, 185, 129, 0.02));">
           <div class="panel-header" style="border-bottom-color: rgba(16, 185, 129, 0.1);">
-            <h3><i class="fas fa-database" style="color: var(--success);"></i> Entorno de Base de Datos</h3>
-            <span class="badge badge-green"><i class="fas fa-check-circle"></i> Listo para Integración</span>
+            <h3><i class="fas fa-database" style="color: var(--success);"></i> Entorno Conectado</h3>
+            <span class="badge badge-green"><i class="fas fa-check-circle"></i> Online</span>
           </div>
-          <p style="color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6;">Ingresa las credenciales de tu proyecto de Supabase. Una vez conectadas, el sistema dejará de usar el almacenamiento local del navegador y sincronizará los documentos en la nube en tiempo real.</p>
-          
-          <div class="form-control" style="margin-bottom: 1.5rem;">
-            <label>Project URL (REST API)</label>
-            <input type="text" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co" style="font-family: monospace; letter-spacing: 0.5px;">
-          </div>
-          <div class="form-control" style="margin-bottom: 1.5rem;">
-            <label>Project API Key (anon / public)</label>
-            <input type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="font-family: monospace; letter-spacing: 0.5px;">
-          </div>
-          
-          <div style="display: flex; gap: 15px; margin-top: 2rem;">
-            <button class="btn btn-primary" onclick="showToast('Guardando credenciales... (Simulación)')"><i class="fas fa-save"></i> Guardar Configuración</button>
-            <button class="btn btn-danger" style="color: var(--text-main); border-color: var(--border);" onclick="showToast('Error de conexión. Verifica las credenciales.', 'error')"><i class="fas fa-wifi"></i> Probar Conexión</button>
-          </div>
+          <p style="color: var(--text-muted);">Las credenciales se han implementado directamente en el código base (CDN). Tu proyecto está listo para lectura y escritura.</p>
         </div>
       </div>
 
@@ -261,29 +182,23 @@
 
   <div id="toast-container"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
     // ==========================================
-    // SISTEMA DE NAVEGACIÓN SPA (Single Page App)
+    // INICIALIZACIÓN SUPABASE
     // ==========================================
-    function cambiarPantalla(idPantalla, titulo, elementoMenu) {
-      // 1. Ocultar todas las pantallas
-      document.querySelectorAll('.screen-section').forEach(sec => sec.classList.remove('active'));
-      // 2. Mostrar la solicitada
-      document.getElementById('pantalla-' + idPantalla).classList.add('active');
-      
-      // 3. Cambiar título superior
-      document.getElementById('topbar-title').innerText = titulo;
+    const supabaseUrl = 'https://qqrgbclthgizghzvqlht.supabase.co/rest/v1/'; // PON TU URL AQUÍ
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxcmdiY2x0aGdpemdoenZxbGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzAwMjEsImV4cCI6MjA5MjcwNjAyMX0.6X4UyBzgc11gTpXlI8eneDwk-R9JexnufiMN7oyDPr8';          // PON TU KEY AQUÍ
+    const clienteSupabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-      // 4. Actualizar menú lateral
+    function cambiarPantalla(idPantalla, titulo, elementoMenu) {
+      document.querySelectorAll('.screen-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById('pantalla-' + idPantalla).classList.add('active');
+      document.getElementById('topbar-title').innerText = titulo;
       document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
       elementoMenu.classList.add('active');
     }
-
-    // ==========================================
-    // LÓGICA DE DATOS (ENTREGABLES)
-    // ==========================================
-    function obtenerBaseDeDatos() { return JSON.parse(localStorage.getItem('db_tareas_formal')) || []; }
-    function guardarBaseDeDatos(datos) { localStorage.setItem('db_tareas_formal', JSON.stringify(datos)); cargarTabla(); }
 
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
@@ -294,49 +209,80 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    function subirArchivo() {
+    async function subirArchivo() {
       const fileInput = document.getElementById('uploadFile');
-      if (!fileInput.files[0]) { showToast("Seleccione un archivo primero", "error"); return; }
-      let db = obtenerBaseDeDatos();
-      db.push({ id: 'doc_' + Date.now(), unidad: parseInt(document.getElementById('uploadUnidad').value), semana: parseInt(document.getElementById('uploadWeek').value), nombre: fileInput.files[0].name });
-      guardarBaseDeDatos(db);
-      fileInput.value = ''; 
-      showToast("Archivo registrado exitosamente");
-    }
+      const unidad = parseInt(document.getElementById('uploadUnidad').value);
+      const semana = parseInt(document.getElementById('uploadWeek').value);
+      const file = fileInput.files[0];
 
-    function borrarArchivo(id) {
-      if(confirm("¿Estás seguro de que deseas eliminar este registro?")) {
-        let db = obtenerBaseDeDatos();
-        db = db.filter(doc => doc.id !== id);
-        guardarBaseDeDatos(db);
-        showToast("Registro eliminado", "error");
+      if (!file) { showToast("Seleccione un archivo primero", "error"); return; }
+      
+      showToast("Subiendo archivo a la nube...");
+
+      try {
+        const rutaArchivo = `semana_${semana}/${Date.now()}_${file.name}`;
+        const { data: storageData, error: storageError } = await clienteSupabase.storage.from('entregables').upload(rutaArchivo, file);
+        
+        if (storageError) throw storageError;
+
+        const { data, error: dbError } = await clienteSupabase.from('documentos').insert([{ unidad: unidad, semana: semana, nombre: file.name, archivo_ruta: rutaArchivo }]);
+        
+        if (dbError) throw dbError;
+
+        showToast("Archivo subido y registrado exitosamente");
+        fileInput.value = ''; 
+        cargarTabla();
+      } catch (err) {
+        showToast("Error de servidor. Revisa tu conexión a Supabase.", "error");
+        console.error(err);
       }
     }
 
-    function cargarTabla() {
+    async function cargarTabla() {
       const tbody = document.getElementById('filesTableBody');
-      let db = obtenerBaseDeDatos();
-      document.getElementById('kpi-total').innerText = db.length;
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Cargando datos...</td></tr>';
+      
+      try {
+        const { data: db, error } = await clienteSupabase.from('documentos').select('*').order('unidad', { ascending: true }).order('semana', { ascending: true });
+        
+        if (error) throw error;
+        
+        document.getElementById('kpi-total').innerText = db.length;
 
-      db.sort((a, b) => a.unidad !== b.unidad ? a.unidad - b.unidad : a.semana - b.semana);
-
-      if (db.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 4rem;"><i class="fas fa-inbox" style="font-size:2rem; opacity:0.3; margin-bottom:1rem; display:block;"></i>No hay archivos en el sistema.</td></tr>';
-      } else {
-        tbody.innerHTML = db.map(doc => `
-          <tr>
-            <td><span class="badge badge-blue">Unidad ${doc.unidad}</span> <span style="color:var(--text-muted); font-size:0.85rem; margin-left:8px;">Sem ${doc.semana}</span></td>
-            <td style="font-weight: 500;"><i class="fas fa-file-pdf" style="color:var(--danger); margin-right:8px;"></i> ${doc.nombre}</td>
-            <td style="text-align: right;"><button class="btn btn-danger" onclick="borrarArchivo('${doc.id}')"><i class="fas fa-trash"></i> Eliminar</button></td>
-          </tr>`).join('');
+        if (db.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 4rem;"><i class="fas fa-inbox" style="font-size:2rem; opacity:0.3; margin-bottom:1rem; display:block;"></i>Repositorio vacío.</td></tr>';
+        } else {
+          tbody.innerHTML = db.map(doc => `
+            <tr>
+              <td><span class="badge badge-blue">Unidad ${doc.unidad}</span> <span style="color:var(--text-muted); font-size:0.85rem; margin-left:8px;">Sem ${doc.semana}</span></td>
+              <td style="font-weight: 500;"><i class="fas fa-file-pdf" style="color:var(--danger); margin-right:8px;"></i> ${doc.nombre}</td>
+              <td style="text-align: right;"><button class="btn btn-danger" onclick="borrarArchivo('${doc.id}', '${doc.archivo_ruta}')"><i class="fas fa-trash"></i> Eliminar</button></td>
+            </tr>`).join('');
+        }
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--danger); padding: 4rem;">Por favor, conecta Supabase para ver los archivos.</td></tr>';
       }
     }
-    cargarTabla();
 
-    // ==========================================
-    // LÓGICA DE SESIÓN Y TEMA
-    // ==========================================
-    function cerrarSesionAdmin() {
+    async function borrarArchivo(id, ruta) {
+      if(confirm("¿Estás seguro de que deseas eliminar este registro de la nube?")) {
+        try {
+          await clienteSupabase.storage.from('entregables').remove([ruta]);
+          const { error } = await clienteSupabase.from('documentos').delete().eq('id', id);
+          if (error) throw error;
+          
+          showToast("Registro eliminado", "error");
+          cargarTabla();
+        } catch (err) {
+          showToast("Error eliminando registro", "error");
+        }
+      }
+    }
+
+    window.onload = cargarTabla;
+
+    async function cerrarSesionAdmin() {
+      try { await clienteSupabase.auth.signOut(); } catch(e){}
       localStorage.removeItem('session_activa'); 
       window.location.href = 'index.html'; 
     }
@@ -347,15 +293,11 @@
     function toggleTheme() {
       const root = document.documentElement;
       if (root.getAttribute('data-theme') === 'light') {
-        root.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'dark');
-        themeBtn.innerHTML = '<i class="fas fa-sun"></i> Tema Claro';
+        root.removeAttribute('data-theme'); localStorage.setItem('theme', 'dark'); themeBtn.innerHTML = '<i class="fas fa-sun"></i> Tema Claro';
       } else {
-        root.setAttribute('data-theme', 'light');
-        localStorage.setItem('theme', 'light');
-        themeBtn.innerHTML = '<i class="fas fa-moon"></i> Tema Oscuro';
+        root.setAttribute('data-theme', 'light'); localStorage.setItem('theme', 'light'); themeBtn.innerHTML = '<i class="fas fa-moon"></i> Tema Oscuro';
       }
     }
   </script>
 </body>
-</html> 
+</html>
