@@ -16,7 +16,7 @@
     :root {
       --bg-base: #050505; --bg-surface: #0f0f11; --bg-hover: rgba(255,255,255,0.05);
       --border: rgba(255,255,255,0.08); --text-main: #fafafa; --text-muted: #a1a1aa;
-      --primary: #3b82f6; --primary-hover: #2563eb;
+      --primary: #de5a3f; --primary-hover: #b7391f;
       --danger: #ef4444; --danger-hover: rgba(239, 68, 68, 0.15); --success: #10b981;
       --warning: #f59e0b;
       --radius: 12px;
@@ -24,7 +24,7 @@
     [data-theme="light"] {
       --bg-base: #f1f5f9; --bg-surface: #ffffff; --bg-hover: rgba(0,0,0,0.05);
       --border: rgba(0,0,0,0.1); --text-main: #0f172a; --text-muted: #64748b;
-      --primary: #2563eb; --primary-hover: #1e40af;
+      --primary: #d54324; --primary-hover: #b7391f;
       --danger: #ef4444; --danger-hover: rgba(239, 68, 68, 0.1); --success: #10b981;
     }
     ::-webkit-scrollbar { width: 8px; }
@@ -54,7 +54,7 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
     .kpi-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: 0.2s; }
-    .kpi-icon { width: 50px; height: 50px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .kpi-icon { width: 50px; height: 50px; border-radius: 12px; background: rgba(222, 90, 63, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
     .kpi-data h4 { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;}
     .kpi-data span { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
     .panel { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2.5rem; }
@@ -69,11 +69,15 @@
     .form-control label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;}
     .form-control input, .form-control select { width: 100%; padding: 0.8rem 1rem; background: transparent; border: 1px solid var(--border); color: var(--text-main); border-radius: 8px; outline: none; font-family: inherit;}
     .form-control input:focus, .form-control select:focus { border-color: var(--primary); }
+    
+    /* SOLUCIÓN: Color de opciones del select siempre legible */
+    .form-control select option { color: #000000; background: #ffffff; }
+    
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th { color: var(--text-muted); border-bottom: 1px solid var(--border); padding: 1rem; font-size: 0.8rem; text-transform: uppercase;}
     td { padding: 1.2rem 1rem; border-bottom: 1px solid var(--border); }
-    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid transparent; }
-    .badge-blue { background: rgba(59, 130, 246, 0.1); color: var(--primary); border-color: rgba(59, 130, 246, 0.2); }
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid transparent; display: inline-block; text-align: center;}
+    .badge-primary { background: rgba(222, 90, 63, 0.1); color: var(--primary); border-color: rgba(222, 90, 63, 0.2); }
     .badge-green { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.2); }
     .badge-yellow { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
     #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
@@ -90,6 +94,7 @@
     <div class="nav-label" style="margin-top: 0;">Sistema Central</div>
     <ul class="nav-menu">
       <li><a class="nav-link active" onclick="cambiarPantalla('entregables', 'Gestión de Entregables', this)"><i class="fas fa-file-alt"></i> Entregables</a></li>
+      <li><a class="nav-link" onclick="cambiarPantalla('config-semanas', 'Configuración de Semanas', this)"><i class="fas fa-calendar-alt"></i> Nombres de Semanas</a></li>
       <li><a class="nav-link" onclick="cambiarPantalla('usuarios', 'Gestión de Usuarios', this)"><i class="fas fa-users"></i> Usuarios y Permisos</a></li>
       <li><a class="nav-link" onclick="cambiarPantalla('supabase', 'Configuración Supabase', this)"><i class="fas fa-database"></i> Conexión Supabase</a></li>
     </ul>
@@ -136,7 +141,12 @@
             </div>
             <div class="form-control" style="flex: 0.5;">
               <label>Semana</label>
-              <select id="uploadWeek"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option><option value="6">Semana 6</option></select>
+              <select id="uploadWeek">
+                <option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option>
+                <option value="5">Semana 5</option><option value="6">Semana 6</option><option value="7">Semana 7</option><option value="8">Semana 8</option>
+                <option value="9">Semana 9</option><option value="10">Semana 10</option><option value="11">Semana 11</option><option value="12">Semana 12</option>
+                <option value="13">Semana 13</option><option value="14">Semana 14</option><option value="15">Semana 15</option><option value="16">Semana 16</option>
+              </select>
             </div>
             <div class="form-control">
               <label>Archivo Físico (PDF)</label>
@@ -155,10 +165,43 @@
         </div>
       </div>
 
+      <div id="pantalla-config-semanas" class="screen-section">
+        <div class="panel">
+          <div class="panel-header"><h3><i class="fas fa-edit" style="color:var(--primary)"></i> Editar Nombres de Semanas</h3></div>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -15px; margin-bottom: 20px;">
+            Asegúrate de haber creado la tabla <strong>'semanas'</strong> en tu base de datos Supabase con las columnas <code>semana_numero</code> (Int4, Clave primaria) y <code>titulo</code> (Text).
+          </p>
+          <div class="input-row">
+            <div class="form-control" style="flex: 0.3;">
+              <label>Seleccionar Semana</label>
+              <select id="editWeekSelect">
+                <option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option>
+                <option value="5">Semana 5</option><option value="6">Semana 6</option><option value="7">Semana 7</option><option value="8">Semana 8</option>
+                <option value="9">Semana 9</option><option value="10">Semana 10</option><option value="11">Semana 11</option><option value="12">Semana 12</option>
+                <option value="13">Semana 13</option><option value="14">Semana 14</option><option value="15">Semana 15</option><option value="16">Semana 16</option>
+              </select>
+            </div>
+            <div class="form-control" style="flex: 0.7;">
+              <label>Nuevo Título / Tema de la Semana</label>
+              <input type="text" id="newWeekName" placeholder="Ej: Bases de Datos Distribuidas">
+            </div>
+            <button class="btn btn-primary" onclick="guardarNombreSemana()"><i class="fas fa-save"></i> Guardar Cambio</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3><i class="fas fa-list-ul" style="color:var(--primary)"></i> Temario Configurado Actualmente</h3></div>
+          <table id="semanasTable">
+            <thead><tr><th style="width: 20%;">Semana</th><th>Nombre / Tema Asignado</th></tr></thead>
+            <tbody id="semanasTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div id="pantalla-usuarios" class="screen-section">
         <div class="kpi-grid">
           <div class="kpi-card">
-            <div class="kpi-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i class="fas fa-users"></i></div>
+            <div class="kpi-icon" style="background: rgba(227, 117, 93, 0.1); color: #e3755d;"><i class="fas fa-users"></i></div>
             <div class="kpi-data"><h4>Total Usuarios</h4><span>1</span></div>
           </div>
         </div>
@@ -185,12 +228,17 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    // ==========================================
-    // INICIALIZACIÓN SUPABASE
-    // ==========================================
-    const supabaseUrl = 'https://qqrgbclthgizghzvqlht.supabase.co'; // PON TU URL AQUÍ
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxcmdiY2x0aGdpemdoenZxbGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzAwMjEsImV4cCI6MjA5MjcwNjAyMX0.6X4UyBzgc11gTpXlI8eneDwk-R9JexnufiMN7oyDPr8';          // PON TU KEY AQUÍ
+    const supabaseUrl = 'https://qqrgbclthgizghzvqlht.supabase.co'; 
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxcmdiY2x0aGdpemdoenZxbGh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMzAwMjEsImV4cCI6MjA5MjcwNjAyMX0.6X4UyBzgc11gTpXlI8eneDwk-R9JexnufiMN7oyDPr8';         
     const clienteSupabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Diccionario temporal por si no hay tabla creada todavía
+    const nombresSemanasDefault = {
+      1: "Introducción y Conceptos Base", 2: "Arquitectura Cliente-Servidor", 3: "Diseño de Capas Lógicas", 4: "Semanas de Pruebas I",
+      5: "Procedimientos Almacenados", 6: "Funciones y Triggers", 7: "Gestión de Concurrencia", 8: "Examen Parcial",
+      9: "Roles y Privilegios", 10: "Encriptación de Datos", 11: "Integración de APIs", 12: "Evaluación Unidad III",
+      13: "Planes de Ejecución", 14: "Estrategias de Backups", 15: "Implementación", 16: "Sustentación Final"
+    };
 
     function cambiarPantalla(idPantalla, titulo, elementoMenu) {
       document.querySelectorAll('.screen-section').forEach(sec => sec.classList.remove('active'));
@@ -209,6 +257,9 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
+    // ==========================================
+    // FUNCIONES ORIGINALES DE ENTREGABLES
+    // ==========================================
     async function subirArchivo() {
       const fileInput = document.getElementById('uploadFile');
       const unidad = parseInt(document.getElementById('uploadUnidad').value);
@@ -220,14 +271,12 @@
       showToast("Conectando con Supabase...");
 
       try {
-        // 🛠️ LA SOLUCIÓN: Limpiamos el nombre del archivo para que Supabase no se queje
         const nombreSeguro = file.name
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quita las tildes
-          .replace(/[^a-zA-Z0-9.-]/g, "_");                 // Cambia espacios y símbolos por guiones bajos
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-zA-Z0-9.-]/g, "_");                 
           
         const rutaArchivo = `semana_${semana}/${Date.now()}_${nombreSeguro}`;
         
-        // 1. GUARDAR EN STORAGE (CARPETA)
         const { data: storageData, error: storageError } = await clienteSupabase.storage.from('entregables').upload(rutaArchivo, file);
         
         if (storageError) {
@@ -235,7 +284,6 @@
             throw storageError;
         }
 
-        // 2. GUARDAR EN BASE DE DATOS (Guardamos el file.name original para que la tabla se vea bien)
         const { data, error: dbError } = await clienteSupabase.from('documentos').insert([{ unidad: unidad, semana: semana, nombre: file.name, archivo_ruta: rutaArchivo }]);
         
         if (dbError) {
@@ -247,28 +295,8 @@
         fileInput.value = ''; 
         cargarTabla();
       } catch (err) {
-        showToast("Revisa la ventana emergente para ver el error", "error");
-        console.error("Detalle técnico:", err);
-      }
-    
-    
-
-      try {
-        const rutaArchivo = `semana_${semana}/${Date.now()}_${file.name}`;
-        const { data: storageData, error: storageError } = await clienteSupabase.storage.from('entregables').upload(rutaArchivo, file);
-        
-        if (storageError) throw storageError;
-
-        const { data, error: dbError } = await clienteSupabase.from('documentos').insert([{ unidad: unidad, semana: semana, nombre: file.name, archivo_ruta: rutaArchivo }]);
-        
-        if (dbError) throw dbError;
-
-        showToast("Archivo subido y registrado exitosamente");
-        fileInput.value = ''; 
-        cargarTabla();
-      } catch (err) {
         showToast("Error de servidor. Revisa tu conexión a Supabase.", "error");
-        console.error(err);
+        console.error("Detalle técnico:", err);
       }
     }
 
@@ -288,7 +316,7 @@
         } else {
           tbody.innerHTML = db.map(doc => `
             <tr>
-              <td><span class="badge badge-blue">Unidad ${doc.unidad}</span> <span style="color:var(--text-muted); font-size:0.85rem; margin-left:8px;">Sem ${doc.semana}</span></td>
+              <td><span class="badge badge-primary" style="width: 80px;">Unidad ${doc.unidad}</span> <span style="color:var(--text-muted); font-size:0.85rem; margin-left:8px;">Sem ${doc.semana}</span></td>
               <td style="font-weight: 500;"><i class="fas fa-file-pdf" style="color:var(--danger); margin-right:8px;"></i> ${doc.nombre}</td>
               <td style="text-align: right;"><button class="btn btn-danger" onclick="borrarArchivo('${doc.id}', '${doc.archivo_ruta}')"><i class="fas fa-trash"></i> Eliminar</button></td>
             </tr>`).join('');
@@ -313,7 +341,77 @@
       }
     }
 
-    window.onload = cargarTabla;
+    // ==========================================
+    // NUEVAS FUNCIONES PARA CONFIGURAR SEMANAS
+    // ==========================================
+    async function cargarNombresSemanas() {
+      const tbody = document.getElementById('semanasTableBody');
+      tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Cargando estructura...</td></tr>';
+      
+      try {
+        const { data, error } = await clienteSupabase.from('semanas').select('*').order('semana_numero', { ascending: true });
+        
+        let htmlContent = '';
+        for(let i=1; i<=16; i++) {
+          let semanaDB = data ? data.find(s => s.semana_numero === i) : null;
+          let titulo = semanaDB ? semanaDB.titulo : nombresSemanasDefault[i];
+          
+          htmlContent += `
+            <tr>
+              <td><span class="badge badge-primary" style="width: 80px;">Semana ${i}</span></td>
+              <td style="font-weight: 500;">${titulo}</td>
+            </tr>`;
+        }
+        tbody.innerHTML = htmlContent;
+      } catch (err) {
+        // Si hay error (posiblemente porque la tabla no existe), muestra el default y advierte
+        console.warn("Tabla 'semanas' no encontrada, mostrando lista por defecto.");
+        let htmlContent = '';
+        for(let i=1; i<=16; i++) {
+          htmlContent += `
+            <tr>
+              <td><span class="badge badge-primary" style="width: 80px;">Semana ${i}</span></td>
+              <td style="font-weight: 500; color: var(--text-muted);">${nombresSemanasDefault[i]} (Default)</td>
+            </tr>`;
+        }
+        tbody.innerHTML = htmlContent;
+      }
+    }
+
+    async function guardarNombreSemana() {
+      const numeroSemana = parseInt(document.getElementById('editWeekSelect').value);
+      const nuevoTitulo = document.getElementById('newWeekName').value;
+
+      if (!nuevoTitulo) {
+        showToast("Por favor, ingresa un nombre para la semana.", "error");
+        return;
+      }
+
+      showToast("Actualizando base de datos...");
+
+      try {
+        // Upsert inserta o actualiza basándose en la columna onConflict (semana_numero)
+        const { error } = await clienteSupabase.from('semanas').upsert(
+          [{ semana_numero: numeroSemana, titulo: nuevoTitulo }], 
+          { onConflict: 'semana_numero' }
+        );
+
+        if (error) throw error;
+
+        showToast("Nombre de semana actualizado con éxito.");
+        document.getElementById('newWeekName').value = '';
+        cargarNombresSemanas(); // Recargar la lista
+      } catch (err) {
+        showToast("Error. ¿Creaste la tabla 'semanas' y le asignaste Primary Key a 'semana_numero'?", "error");
+        console.error(err);
+      }
+    }
+
+    // INICIALIZACIÓN
+    window.onload = () => {
+      cargarTabla();
+      cargarNombresSemanas();
+    };
 
     async function cerrarSesionAdmin() {
       try { await clienteSupabase.auth.signOut(); } catch(e){}
